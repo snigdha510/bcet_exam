@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  .zoom {
+    transition: transform .2s;
+  }
+  .zoom:hover {
+    transform: scale(1.2);
+  }
+  .button2:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  }
+  .po:hover {
+    transition: transform .2s;
+  }
+  .po:hover {
+    background-color: cyan;
+  }
+</style>
+<div class="jumbotron" style="margin-top: 50px; background-color:white;">
+  <div class="jumbotron" style=" background-color:pink;">
+    <h2>All Active Quizzes are Listed Below</h2>
+  </div>
+
+  {% if not(quiz_exists) %}
+  <div class="jumbotron" style="background-color: white;">
+    <div class="d-flex justify-content-center">
+      <h1>No Active Quizzes Right Now</h1>
+    </div>
+    <div class="d-flex justify-content-center">
+      <h3>Please refresh if you are expecting a quiz right now...</h3>
+    </div>
+  </div>
+  <hr style="width:100%;text-align:left;margin-left:0; width:10px;">
+  {% endif %}
+
+  {% for quiz in quiz_list %}
+  <div class="jumbotron" style="background-color:rgba(128, 128, 128, 0.096);">
+    <div class="example hoverable">
+      <div class="container">
+        <div class="row" style=" height:0px; padding:0px; font-size:large; margin-top:-30px; border-radius:black solid;">
+          <div class="col" id="po" style="background-color:mistyrose;border-radius:black solid;">
+            <h4 class="pt-3 pl-2"><strong>Quiz ID : {{quiz.id}} <span class="ml-5 pl-5">{{quiz.title}}</span></strong></h4>
+          </div>
+          <div class="col-md-auto" style="background-color:mistyrose; padding:20px;">
+          </div>
+          <div class="col col-lg-2" style="background-color: mistyrose; padding:20px;">
+            <div class="example hoverable zoom">
+              <a type="button" class="btn btn-success activate-quiz" href="{{ url_for('student.attempt_quiz', quiz_id=quiz.id) }}" 
+              style="width: 150px; margin-top:-4px; margin-left:px; background-color:#e43c5c;" 
+              data-quiz-id="{{ quiz.id }}">Activate</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr style="width:100%;text-align:left;margin-left:0; width:10px;">
+  </div>
+  {% endfor %}
+</div>
+
+<footer class="page-footer blue text-center" style="padding: 15px; position: bottom; left: 0; bottom: 0; width: 100%; background-color:rgba(128, 128, 128, 0.199);">
+  <!--Footer Links-->
+  <div class="container-fluid" style="padding: 15px;">
+    <div class="row">
+      <!--First column-->
+      <div class="col-md-6">
+        <h5 class="title mb-3">PARiKSHA</h5>
+        <p>PARiKSHA is created with a motive of providing a unified platform to students and teachers so that the process of learning and its quality does not reduce in these tough times.</p>
+      </div>
+      <!--/.First column-->
+      <!--Second column-->
+      <div class="col">
+        <h5 class="title">Contact Us</h5>
+        <li><a href="#">Mail</a></li>
+        <p>pariksha.contact@gmail.com</p>
+        <li><a href="https://www.linkedin.com/posts/pulkit-vyas_onlineexamination-onlineeducation-edtech-activity-6716777003296555008-MvzC">LinkedIn</a></li>
+      </div>
+      <!--/.Second column-->
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Function to trigger fullscreen mode
+  function triggerFullscreen() {
+    document.documentElement.requestFullscreen(); // Request fullscreen mode
+  }
+
+  // Add an event listener to all "Activate" buttons
+  document.querySelectorAll('.activate-quiz').forEach(button => {
+    button.addEventListener('click', function(event) {
+      // Prevent the default behavior of the link
+      event.preventDefault();
+      // Get the quiz ID from the data attribute
+      const quizId = this.getAttribute('data-quiz-id');
+      // Construct the URL to redirect to
+      const url = '{{ url_for("student.attempt_quiz", quiz_id=0) }}'.replace('0', quizId);
+      // Open a new window with the constructed URL
+      const newWindow = window.open(url, '_blank', 'fullscreen=yes, scrollbars=yes');
+      if (!newWindow) {
+        alert('Please allow pop-ups for this website to open the quiz in a new window.');
+      } else {
+        newWindow.addEventListener('load', function() {
+
+          const event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            code: 'Enter',
+            which: 13,
+            keyCode: 13,
+            bubbles: true
+          });
+          newWindow.document.dispatchEvent(event); // Dispatch the event in the new window
+        });
+      }
+    });
+  });
+</script>
+
+
+{% endblock content %}
