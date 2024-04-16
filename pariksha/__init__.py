@@ -35,10 +35,13 @@ def create_app(config_class = Config):
     from pariksha.extra.routes import extra
     app.register_blueprint(extra)
 
-
+    
+    
     app.register_blueprint(student)
     app.register_blueprint(teacher)
     app.register_blueprint(main)
     app.register_blueprint(auth)
+    
+    
 
     return app

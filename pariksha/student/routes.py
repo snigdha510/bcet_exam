@@ -2,10 +2,11 @@ from flask import render_template, Blueprint, redirect, url_for, request, flash
 from flask_login import login_required, current_user, logout_user
 from pariksha import db
 from pariksha.student.utils import shuffle, random
-from pariksha.models import Student, Teacher, Quiz, submits_quiz
+from pariksha.models import Student, Teacher, Quiz, submits_quiz, User
 from pariksha.student.utils import bar_graph
 import copy
 from sqlalchemy import select
+import requests
 
 student = Blueprint("student", __name__, url_prefix="/student", template_folder="templates", static_folder="static")
 
@@ -25,79 +26,132 @@ def home():
 @student.route("/quiz/<int:quiz_id>")
 @login_required
 def quiz(quiz_id):
+    # Check if the current user is a student
     if current_user.student is None:
         logout_user()
         return redirect(url_for('main.welcome'))
 
+    # Fetch the quiz from the database
     quiz = Quiz.query.filter_by(id=quiz_id).first_or_404()
 
+    # Check if the quiz has already been submitted
     if quiz in current_user.student.submitted_quiz:
-        flash('You have already submitted this quiz!!', 'warning')
+        flash('You have already submitted this quiz!', 'warning')
         return redirect(url_for('student.home'))
 
+    # Check if the student is allowed to access the quiz
     teacher_id_list = [teacher.id for teacher in current_user.student.taught_by.all()]
     if quiz.teacher_id not in teacher_id_list:
-        flash("You are not allowed to access the page you requested", "warning")
+        flash("You are not allowed to access this quiz.", "warning")
         return redirect(url_for('student.home'))
 
+    # Check if the quiz is currently active
     if not quiz.active:
-        flash("The quiz you are trying to attempt is not active right now", "warning")
+        flash("This quiz is not active at the moment.", "warning")
         return redirect(url_for('student.home'))
 
+    # Shuffle questions and options
     questions = quiz.questions
-    orig_questions = {str(question.question_desc): [str(question.option_1), str(question.option_2),
-                                                     str(question.option_3), str(question.option_4)] for question in
-                      questions}
+    shuffled_questions = {question.question_desc: random.sample([
+        question.option_1, question.option_2, question.option_3, question.option_4], k=4)
+        for question in questions}
 
-    questions_copy = copy.deepcopy(orig_questions)
-    shuffled_questions = shuffle(questions_copy)
+    # Render the quiz directly
+    return render_template('quiz.html', title=quiz.title, quiz_id=quiz_id, shuffled_questions=shuffled_questions,  questions=questions)
 
-    for i in questions_copy.keys():
-        random.shuffle(questions_copy[i])
 
-    question_count = len(orig_questions)
+# @student.route("/quiz/<int:quiz_id>", methods=["POST"])
+# @login_required
+# def quiz_post(quiz_id):
 
-    # Render the template and pass quiz_id and shuffled_questions to JavaScript
-    return render_template('quiz.html', title=quiz.title, quiz_id=quiz_id, shuffled_questions=shuffled_questions,
-                           questions=questions_copy, question_count=question_count)
+#     quiz = Quiz.query.filter_by(id=quiz_id).first_or_404()
+#     if not quiz.active:
+#         flash('QUIZ NOT SUBMITTED The quiz you are trying to submit has expired', 'danger')
+#         return redirect(url_for('student.home'))
+#     if quiz in current_user.student.submitted_quiz:
+#         flash('You have already submitted this quiz!!', 'warning')
+#         return redirect(url_for('student.home'))
+#     questions = quiz.questions
+#     orig_questions = dict()
+#     orig_questions_marks = dict()
+#     for question in questions:
+#         orig_questions[str(question.question_desc)] = [str(question.option_1), str(question.option_2),
+#                                                        str(question.option_3), str(question.option_4)]
+#         orig_questions_marks[str(question.question_desc)] = question.marks
 
+#     questions = copy.deepcopy(orig_questions)
+
+#     marks = 0
+#     for i in questions.keys():
+#         answered = request.form.get(i)
+#         if answered is None:  # If question is not answered
+#             marks = 0
+#             break
+#         if orig_questions[i][0] == answered:
+#             marks += orig_questions_marks[i]
+
+#     submission = submits_quiz(student_id=current_user.student.id, quiz_id=quiz_id, marks=marks)
+#     current_user.student.submitted_quiz.append(quiz)
+#     db.session.add(submission)
+#     db.session.commit()
+#     flash(f'Your response for Quiz : {quiz.title} has been submitted', 'success')
+#     return redirect(url_for('student.home'))
 
 @student.route("/quiz/<int:quiz_id>", methods=["POST"])
 @login_required
 def quiz_post(quiz_id):
-
     quiz = Quiz.query.filter_by(id=quiz_id).first_or_404()
     if not quiz.active:
-        flash('QUIZ NOT SUBMITTED The quiz you are trying to submit has expired', 'danger')
+        flash('QUIZ NOT SUBMITTED: The quiz you are trying to submit has expired', 'danger')
         return redirect(url_for('student.home'))
     if quiz in current_user.student.submitted_quiz:
         flash('You have already submitted this quiz!!', 'warning')
         return redirect(url_for('student.home'))
+
     questions = quiz.questions
-    orig_questions = dict()
-    orig_questions_marks = dict()
+    total_marks = 0
     for question in questions:
-        orig_questions[str(question.question_desc)] = [str(question.option_1), str(question.option_2),
-                                                       str(question.option_3), str(question.option_4)]
-        orig_questions_marks[str(question.question_desc)] = question.marks
+        answered = request.form.get(str(question.question_desc))
+        correct_option = question.correct_answer  # Assuming you have a way to identify the correct answer
+        marks_awarded = question.marks if answered == correct_option else 0
+        total_marks += marks_awarded
 
-    questions = copy.deepcopy(orig_questions)
-
-    marks = 0
-    for i in questions.keys():
-        answered = request.form.get(i)
-        if answered is None:  # If question is not answered
-            marks = 0
-            break
-        if orig_questions[i][0] == answered:
-            marks += orig_questions_marks[i]
-
-    submission = submits_quiz(student_id=current_user.student.id, quiz_id=quiz_id, marks=marks)
-    current_user.student.submitted_quiz.append(quiz)
+    submission = submits_quiz(student_id=current_user.student.id, quiz_id=quiz_id, marks=total_marks)
     db.session.add(submission)
     db.session.commit()
+
+    # Gather additional student details for the API call
+    student = User.query.get(current_user.student.id)
+    student_details = {
+        "id": student.id,
+        "talentName": student.name,
+        "email": student.email,
+        "score": total_marks
+    }
+
+    send_results_to_api(quiz.teacher_id, quiz_id, [student_details])
+
     flash(f'Your response for Quiz : {quiz.title} has been submitted', 'success')
     return redirect(url_for('student.home'))
+
+def send_results_to_api(teacher_id, quiz_id, student_results):
+    data = {
+        "user": {"id": teacher_id},
+        "enterpriseJobDetailsModel": {"id": quiz_id},
+        "listResultScoreModels": student_results
+    }
+    api_url = 'http://52.66.152.129:2021/api/talentdemandmvp/saveAllTalentscore'  # Replace with actual API endpoint
+    try:
+        response = requests.post(api_url, json=data)
+        response.raise_for_status()  # This will raise an exception for HTTP errors
+        if response.status_code == 200:
+            print("Successfully sent data to API")
+        else:
+            print(f"Failed to send data with status code: {response.status_code}")
+    except requests.RequestException as e:
+        print(f"An error occurred while sending results to API: {e}")
+
+
 
 
 @student.route("/list_quiz")

@@ -143,33 +143,26 @@
 </style>
 
 <div class="jumbotron" style="background-color:white; ">
-    
-<div id="timer" style="font-size: 20px; margin-top: 20px; position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999; color: white;">Time Left: 00:59</div>
+    <div id="timer" style="font-size: 20px; margin-top: 20px; position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999; color: white;">Time Left: 00:59</div>
 
-
-    <div class='jumbotron' style="background-color:pink; border-radius:20px; margin-top:30px; margin-left:20px; margin-right:20px;  ">
+    <div class='jumbotron' style="background-color:pink; border-radius:20px; margin-top:30px; margin-left:20px; margin-right:20px;">
         <div style="font-size: 35px; align-items:center;"> <strong>PARiKSHA</strong> - Quiz Heading </div>
-        
     </div>
 
     <form method="POST" id="quiz-form">
         {% for ques in shuffled_questions %}
-        <div class='jumbotron'
-            style="margin-top: 50px;   padding:20px; background-color:rgba(128, 128, 128, 0.116); border-radius:20px;">
-
+        <div class='jumbotron' style="margin-top: 50px; padding:20px; background-color:rgba(128, 128, 128, 0.116); border-radius:20px;">
             <div class="container" style="background-color:plum;  margin-top:10px; border-radius:20px; padding:35px; margin-top:5px;">
-                <h2>Q : {{ques}}</h2>
-                
+                <h2>Q : {{ ques }}</h2>
             </div>
 
             <div class="container" style="padding:10px; margin-top:20px; border-radius:20px; background-color:lightpink;">
                 {% for opts in questions[ques] %}
                 <div style="margin-top: 25px; padding:10px;">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input class="form-check-input" type="radio" value="{{opts}}" name="{{ques}}" >
-                        <label class="form-check-label" for="radio" style="margin-left: 30px; font-size:x-large;">
-                            <span id="male"></span>
-                            {{opts}}
+                        <input class="form-check-input" type="radio" value="{{ opts }}" name="{{ ques }}">
+                        <label class="form-check-label" for="{{ ques }}" style="margin-left: 30px; font-size:x-large;">
+                            {{ opts }}
                         </label>
                     </div>
                 </div>
@@ -178,15 +171,12 @@
         </div>
         {% endfor %}
         
-
-
         <!-- Submit button -->
         <div class="container">
             <div class="row justify-content-end">
                 <div class="col-6 col-md-4"></div>
                 <div class="col-auto" style="padding: 25px;">
-                    <input type="submit" value="Submit" style="padding: 10px; width:200px; background-color:#e43c5c; color:white; font-size:x-large;" class="zoom"
-                        name="submit" id="submit" disabled=true  />
+                    <input type="submit" value="Submit" style="padding: 10px; width:200px; background-color:#e43c5c; color:white; font-size:x-large;" class="zoom" name="submit" id="submit" disabled />
                 </div>
             </div>
         </div>
@@ -194,11 +184,9 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
-        // Set the timer duration
-        var timerDuration = 1 * 60; // 30 minutes in seconds
+        var timerDuration = 5 * 60; // 5 minutes in seconds
         var timerInterval;
     
-        // Function to update the timer display
         function updateTimer() {
             var minutes = Math.floor(timerDuration / 60);
             var seconds = timerDuration % 60;
@@ -206,34 +194,25 @@
             $('#timer').text('Time Left: ' + timerDisplay);
         }
     
-        // Start the timer
         timerInterval = setInterval(function () {
             if (timerDuration > 0) {
                 timerDuration--;
                 updateTimer();
             } else {
-                clearInterval(timerInterval); // Stop the timer
-                $('#quiz-form').submit(); // Automatically submit the form when time runs out
+                clearInterval(timerInterval);
+                $('#quiz-form').submit();
             }
         }, 1000);
     
-        // Enable/disable submit button based on radio button selection
-        var question_count = { shuffled_questions,length };
-        $(":radio").change(function () {
-            if ($(':radio:checked').length == question_count) {
-                $('#submit').attr('disabled', false);
-            }
-        }).change();
-    
-    
-        // Add event listener to detect when the user leaves the window
-        $(window).on('beforeunload', function () {
-            clearInterval(timerInterval); // Stop the timer
-            $('#quiz-form').submit(); // Automatically submit the form when user leaves the window
-            return null; // This prevents the default confirmation dialog
-        });
-    </script>
-    
+        
+
+    var question_count = { question_count };
+    $(":radio").change(function () {
+        if ($(':radio:checked').length == question_count) {
+            $('#submit').attr('disabled', false);
+        }
+    }).change();
+</script>
 </div>
 <footer class="page-footer blue text-center " style="padding: 15px; background-color:rgba(128, 128, 128, 0.199);">
     <!--Footer Links-->

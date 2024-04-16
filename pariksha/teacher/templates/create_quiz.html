@@ -1,12 +1,14 @@
 {% extends "layout.html" %}
 {% block content%}
 
-{% extends "layout.html" %}
-{% block content%}
-
 <head>
+
+
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
@@ -27,6 +29,7 @@
             <div class="modal-body">
                 <li>Enter the correct answer in the first text area option</li>
                 <li>The options would be shuffled for all the students</li>
+    
             </div>
         </div>
     </div>
@@ -92,41 +95,7 @@ background-repeat: no-repeat;
 background-size: cover;
 padding:70px;">
 
-<div class="jumbotron" style="margin-top: 50px; background-color:white; height: 100%; padding:70px;">
-    <div class="container">
-        <form method="POST" enctype="multipart/form-data" id="quizForm">
-            <div class="input-group mb-3">
-                <h4 style="margin-top:7px;">Quiz Title</h4>
-                <input type="text" class="form-control" name="title" id="Quiz_title" placeholder="Enter Quiz Title"
-                    aria-describedby="basic-addon3" required>
-            </div>
-
-            <div class="input-group">
-                <div class="container">
-                    <div class="row">
-                        <div class="input-group-prepend" style="margin-left: 5px;">
-                            <h5 style="margin-top:3px; padding:5px;">Start Date :</h5>
-                        </div>
-                        <input type="date" name='start_time' required>
-                        <h5 style="margin-left: 15px; margin-top:3px; padding:5px;">End Date :</h5>
-                        <input type="date" name='end_time' required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- File upload button -->
-            <div class="form-group mt-3">
-                <label for="jsonFile">Upload JSON File:</label>
-                <input type="file" class="form-control-file" id="jsonFile" name="jsonFile" accept=".json" required>
-            </div>
-
-            <!-- Create quiz button -->
-            <button type="submit" class="btn btn-primary mt-3">Create Quiz</button>
-        </form>
-    </div>
-</div>
-
-    <!-- {% set index = 1 %}
+    {% set index = 1 %}
     <form method="POST">
         <div class="container" style=" background:pink; color:black; padding:50px; border-radius:30px;">
 
@@ -135,66 +104,32 @@ padding:70px;">
             </h2>
             <hr style="width:100%;text-align:left;margin-left:0">
             <hr style="width:100%;text-align:left;margin-left:0">
+            <button id="fetchQuizBtn" class="btn btn-primary">Fetch Quiz</button>
 
-            <!--<div class="input-group mb-3">
-            <div class="input-group-prepend">
-                
-                <span class="input-group-text" id="Quiztitle-addon1">Question No.</span>
-            </div>
-
-            <textarea id="Quiz_title" name="title" rows="1" cols="50" style="border-radius: 5px; border:double;"
-                aria-label="Question" placeholder="Enter the quiz title"></textarea>
-
-        </div>-->
-
-            <!-- <div class="input-group mb-3">
+            <div class="input-group mb-3">
                 <h4 style="margin-top:7px;">Quiz Title</h4>
                 <input type="text" class="form-control" name="title" id="Quiz_title" placeholder="Enter Quiz Title"
-                    aria-describedby="basic-addon3" required>
-            </div> -->
-
-            <!--
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              
-                <span class="input-group-text" id="Start_date-addon1">Start Date</span>
+                    aria-describedby="basic-addon3">
             </div>
-            <input type="date">
-        </div>
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-            
-                <span class="input-group-text" id="End_date-addon1">Start Date</span>
-            </div>
-            <input type="datetime-local" value="2000-01-01T00:00:00" />
-        </div>-->
 
-            <!-- <div class="input-group">
+
+            <div class="input-group">
                 <div class="container">
                     <div class="row">
                         <div class="input-group-prepend" style="margin-left: 5px;">
-                            ############################## start date tag V-->
-                            <!-- <h5 style="margin-top:3px; padding:5px;">Start Date :</h5>
+                            <!-- ############################## start date tag V-->
+                            <h5 style="margin-top:3px; padding:5px;">Start Date :</h5>
                         </div>
-                        <input type="date" name='start_time' required>
+                        <input type="date" name='start_time'>
                         <h5 style="margin-left: 15px; margin-top:3px; padding:5px;">End Date :</h5>
-                        <input type="date" name='end_time' required>
+                        <input type="date" name='end_time'>
                     </div>
                 </div>
             </div>
 
-        </div> -->
+        </div>
 
-
-
-        <!-- <blockquote class="imgur-embed-pub" lang="en" data-id="P36epN6"  ><a href="//imgur.com/P36epN6"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
-   -->
-
-        <!-- <<<<=============================This is the form tag i added- ===============================================>>> -->
-        <div>
-
-            <!-- <==========Start Cloning from here-->
-            <!-- <div class="container"
+            <div class="container"
                 style="background-color:whitesmoke; color:black; padding:20px; border-radius:30px; margin-top:50px; padding:15px;"
                 id="form_instance1">
                 <div style="padding: 10px;">
@@ -210,37 +145,12 @@ padding:70px;">
 
                             </h3>
                         </div>
-                         -->
-
-
-                        <!--<textarea id="QuesIn" name="Question1" rows="3" cols="109"
-                            style="border-radius: 5px; border:double;" aria-label="Question"
-                            placeholder="Enter Your Your Question Here" class='mt-2'></textarea>-->
-
-<!-- 
+                        
                         <input type="text" class="form-control" name="Question1" id="QuesIn"
-                            placeholder="Enter Question" aria-describedby="basic-addon3" required>
+                            placeholder="Enter Question" aria-describedby="basic-addon3">
 
                     </div>
 
-                    <hr>
-
-                    <div class="container">
-                        <div class="col-md-6"> -->
-                            <!-- <div class="form-group">
-                                <label>Choose an image to use in your <strong>Quiz</strong></label>
-                                <div class="input-group">
-                                    <span class="input-group-btn">
-                                        <span class="btn btn-default btn-file" style="background-color: #dc3545;">
-                                            Browse… <input name="photo-url1" type="file" name = "photo_url" id="imgInp">
-                                        </span>
-                                    </span>
-                                    <input type="text" class="form-control" readonly>
-                                </div>
-                                <img id='' />
-                            </div> -->
-                        <!-- </div>
-                    </div>
 
                     <div class="col" style="border-style:solid; padding:10px;">
 
@@ -254,7 +164,7 @@ padding:70px;">
                                     <div class="input-group">
                                         <input type="text" name="Option1A" class="form-control"
                                             aria-label="Text input with radio button" id="OptionA"
-                                            placeholder="Enter Option value this must be correct" required>
+                                            placeholder="Enter Option value this must be correct">
                                     </div>
                                 </div>
                             </div>
@@ -269,7 +179,7 @@ padding:70px;">
 
                                         <input type="text" name="Option1B" class="form-control"
                                             aria-label="Text input with radio button" id="OptionB"
-                                            placeholder="Enter Option value" required>
+                                            placeholder="Enter Option value">
                                     </div>
                                 </div>
                             </div>
@@ -288,9 +198,9 @@ padding:70px;">
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
-                        <!-- <div class="form-group row">
+                        <div class="form-group row">
                             <label for="Option D" class="col-sm-2 col-form-label">For Option
                                 D</label>
                             <div class="col-sm-9">
@@ -299,26 +209,26 @@ padding:70px;">
 
                                         <input type="text" name="Option1D" class="form-control"
                                             aria-label="Text input with radio button" id="OptionD"
-                                            placeholder="Enter Option value" required>
+                                            placeholder="Enter Option value">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="input-group-prepend" style="margin-left: 0px;">
-                            <############################### V enter marks tag-->
-                            <!-- <span class="input-group-text" id="Enter_Marks-addon1"
+                            <!--############################### V enter marks tag-->
+                            <span class="input-group-text" id="Enter_Marks-addon1"
                                 style="border-top-left-radius: 10px; border-bottom-left-radius:10px;">Enter marks
                                 for question</span>
                             <input type="number" min=1
                                 style="width: 50px; border-top-right-radius: 10px; border-bottom-right-radius:10px;"
-                                name="Marks1" id="Marks"  required />
+                                name="Marks1" id="Marks" />
 
-                        </div>  -->
-
-
+                        </div>
 
 
-                    <!-- </div>
+
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -336,19 +246,71 @@ padding:70px;">
 
         </div>
         <hr style="height:2px;border-width:0;color:gray;background-color:gray">
-        <==== Clone till here-->
-        <!-- <div class="row justify-content-center">
+        <!-- <==== Clone till here-->
+        <div class="row justify-content-center">
             <div class="example hoverable">
                 <input type="submit" value="Submit" class="btn btn-danger"
                     style="width: 150px; margin-top:10px; background-color:#e43c5c; ">
             </div>
-        </div>  -->
-    <!-- </form><======= Form tag end ========> -->
-<!-- </div>  -->
+        </div>
+    </form><!-- <======= Form tag end ========>-->
+</div>
 
 
 <script>
+    $(document).ready(function() {
+        $("#fetchQuizBtn").click(function() {
+            $.ajax({
+                url: "{{ url_for('teacher.create_new_quiz_post') }}", // Flask route that handles the AJAX request
+                type: "POST",
+                data: { fetchQuizBtn: true }, // Data sent to the server to indicate the type of request
+                success: function(response) {
+                    console.log("Response received:", response);
+                    if (response.status === 'success') {
+                        alert(response.message + " Share this link: " + response.quizUrl);
 
+                        // Populate the main quiz details
+                        $('#quiz_title').val(response.quiz_title);
+                        $('#start_time').val(new Date(response.start_time).toLocaleString());
+                        $('#end_time').val(new Date(response.end_time).toLocaleString());
+
+                        // Clear previous questions (if any)
+                        $('#questionsContainer').empty();
+
+                        // Dynamically generate question fields based on the fetched data
+                        response.questions.forEach(function(question, index) {
+                            var questionHtml = '<div class="question">' +
+                                '<label>Question ' + (index + 1) + ':</label>' +
+                                '<input type="text" value="' + question.question_desc + '" disabled>' +
+                                '<label>Option 1:</label>' +
+                                '<input type="text" value="' + question.option_1 + '" disabled>' +
+                                '<label>Option 2:</label>' +
+                                '<input type="text" value="' + question.option_2 + '" disabled>' +
+                                '<label>Option 3:</label>' +
+                                '<input type="text" value="' + question.option_3 + '" disabled>' +
+                                '<label>Option 4:</label>' +
+                                '<input type="text" value="' + question.option_4 + '" disabled>' +
+                                '<label>Marks:</label>' +
+                                '<input type="number" value="' + question.marks + '" disabled>' +
+                                '</div>';
+                            $('#questionsContainer').append(questionHtml);
+                        });
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching quiz:", error);
+                    alert("Failed to fetch quiz data. Please try again."); // Optionally notify the user
+                }
+            });
+        });
+    });
+</script>
+
+
+
+<script>
     $(document).ready(function () {
     $(document).on('change', '.btn-file :file', function () {
     var input = $(this),
